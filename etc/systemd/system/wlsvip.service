@@ -1,0 +1,17 @@
+[Unit]
+Description=WebLogic Virtual IP Mounting service
+Before=nodemgr.service adminnodemgr.service
+After=network.target sshd.service
+
+
+[Service]
+User=root
+Group=root
+Type=oneshot
+ExecStart=/opt/oracle/scripts/service_mount_vip.sh
+ExecStop=/opt/oracle/scripts/service_unmount_vip.sh
+RemainAfterExit=yes
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target

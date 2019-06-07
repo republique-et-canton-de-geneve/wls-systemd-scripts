@@ -1,0 +1,17 @@
+[Unit]
+Description=WebLogic SOA Server service
+Requires=nodemgr.service adminserver.service
+After=nodemgr.service adminserver.service
+
+
+[Service]
+User=esbdev
+Group=esbdev
+Type=forking
+ExecStart=/opt/oracle/scripts/start-wls-server.sh soa
+KillMode=control-group
+TimeoutSec=0
+TimeoutStopSec=500
+
+[Install]
+WantedBy=multi-user.target

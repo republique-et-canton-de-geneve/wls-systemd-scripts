@@ -1,0 +1,17 @@
+[Unit]
+Description=WebLogic Nodemanager service
+Before=osbserver.service
+Requires=wlsvip.service
+After=wlsvip.service
+
+[Service]
+User=esbdev
+Group=esbdev
+Type=forking
+ExecStart=/opt/oracle/scripts/service_start_nmgr.sh
+KillMode=control-group
+TimeoutSec=0
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -5,8 +5,8 @@ After=nodemgr.service adminserver.service
 
 
 [Service]
-User=esbdev
-Group=esbdev
+User=weblogicuser
+Group=weblogicgroup
 Type=forking
 ExecStart=/opt/oracle/scripts/start-wls-server.sh osb
 KillMode=control-group

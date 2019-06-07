@@ -1,4 +1,5 @@
 #!/bin/bash
+
 export TERM=xterm
 ifconfig | egrep -wq "^eth0:[0-9]"
 if [ "$?" -eq "0" ]

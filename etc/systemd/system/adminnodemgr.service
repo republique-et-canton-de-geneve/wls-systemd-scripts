@@ -5,8 +5,8 @@ Requires=wlsvip.service
 After=wlsvip.service
 
 [Service]
-User=esbdev
-Group=esbdev
+User=weblogicuser
+Group=weblogicgroup
 Type=forking
 ExecStart=/opt/oracle/scripts/service_start_nmgr_adm.sh
 KillMode=control-group

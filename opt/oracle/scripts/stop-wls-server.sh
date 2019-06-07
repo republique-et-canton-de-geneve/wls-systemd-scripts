@@ -1,9 +1,7 @@
 #!/bin/bash
 #
-# Stop WLS admin server and managed servers
+# Stops WLS admin server and managed servers
 # 
-# modified for this environment: FBI
-#
 # Source the environment
 . /opt/oracle/scripts/esb_env.sh
 . /opt/oracle/scripts/wls_functions.sh

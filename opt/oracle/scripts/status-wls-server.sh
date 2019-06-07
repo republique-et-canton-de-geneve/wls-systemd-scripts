@@ -1,6 +1,7 @@
 #!/bin/bash
+#
 # Check status of node manager, admin server and all nodes
-
+#
 # Source the environment
 . /opt/oracle/scripts/esb_env.sh
 . /opt/oracle/scripts/wls_functions.sh

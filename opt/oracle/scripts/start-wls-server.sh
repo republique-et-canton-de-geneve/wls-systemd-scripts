@@ -1,9 +1,7 @@
 #!/bin/bash
 #
 # Starts WLS admin server and managed servers
-# prasen.palvankar@oracle.com
-# modified for this environment: FBI
-
+#
 # Source the environment
 . /opt/oracle/scripts/esb_env.sh
 . /opt/oracle/scripts/wls_functions.sh

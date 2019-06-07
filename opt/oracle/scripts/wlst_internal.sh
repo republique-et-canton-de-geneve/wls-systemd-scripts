@@ -1,7 +1,9 @@
 #!/bin/bash
+
 set -x
+
 # Determine the location of this script...
-# Note: this will not work if the script is sourced (. ./wlst.sh)
+# Note: this will not work if the script is sourced (. ./wlst_internal.sh)
 SCRIPTNAME=$0
 SCRIPTPATH=`dirname "${SCRIPTNAME}"` 
 

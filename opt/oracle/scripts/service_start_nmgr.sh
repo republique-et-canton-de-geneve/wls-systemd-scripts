@@ -1,10 +1,13 @@
 #!/bin/bash
-
+#
+# Start the Node Manager (systemd)
+# NB. There is no stop script for systemd because the service uses automatic killmode
+#
+# Source the environment
 . /opt/oracle/scripts/esb_env.sh
 . /opt/oracle/scripts/wls_functions.sh
 
-# set -x
-# find /var/opt/oracle/NodeManager -type f | xargs rm
+export TERM=xterm
 
 checkServerStatus ${SERVER_HOSTNAME} ${NMGR_PORT}
 CR_PORT=$?
@@ -20,8 +23,8 @@ then
 	# echo "Node Manager seems to be already running"
 	exit 1
 else
-	# /opt/oracle/scripts/mount_vip.sh
-	nohup ${DOMAIN_HOME}/bin/startNodeManager.sh > ${STDOUT_LOGS_DIR}/NodeManager/NodeManager.out 2>&1 &
+	# /opt/oracle/scripts/mount_vip.sh					# Mounting the VIP is part of a depending systemd service, no need to chain
+	nohup ${DOMAIN_HOME}/bin/startNodeManager.sh >> ${DOMAIN_HOME}/nodemanager/logs/nodemanager.out 2>&1 &
 	# echo "Waiting for start end "
 	COUNT=1
 	CR_PORT=1

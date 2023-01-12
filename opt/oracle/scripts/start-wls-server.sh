@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Starts WLS admin server and managed servers
+# Starts WLS admin server and managed servers (command line)
 #
 # Source the environment
 . /opt/oracle/scripts/esb_env.sh
@@ -14,15 +14,15 @@ printUsage()
 
 startAdminServer()
 {
-        # checking if adminserver should be started on this node
-        ifconfig | egrep -wq `egrep "${ADMIN_HOSTNAME}" /etc/hosts | awk '{print($1)}'`
+        # checking if Adminserver should be started on this node
+		ip a | egrep -wq `egrep "${ADMIN_HOSTNAME}" /etc/hosts | awk '{print($1)}'`
         [ "$?" -ne "0" ] && echo "Adminserver not migrated on this server" && exit 0
         #export PROXY_SETTINGS="-Dhttp.proxySet=true -Dhttp.proxyHost=www-proxy.us.oracle.com -Dhttp.proxyPort=80 -Dhttp.nonProxyHosts=localhost|${HOST}|*.us.oracle.com|*.local"
         status=`checkServerStatusUP ${ADMIN_HOSTNAME} ${ADMIN_PORT}`
         if [ $status = "DOWN" ]
         then
                 cd $DOMAIN_HOME
-                bin/startWebLogic.sh > ${STDOUT_LOGS_DIR}/AdminServer/start_AdminServer.log 2>&1 &
+                bin/startWebLogic.sh > ${STDOUT_LOGS_DIR}/AdminServer/logs/start_AdminServer.log 2>&1 &
                 admin_status="DOWN"
                 echo -n "Starting Admin Server ..."
                 while [ $admin_status = "DOWN"  ]
@@ -32,10 +32,10 @@ startAdminServer()
                         procRunning=$(ps -ef | grep AdminServer | grep -v grep | grep java | wc -l)
                         if [ $procRunning -eq 0 ]
                         then
-                                echo "AdminServer failed to start. Check ${STDOUT_LOGS_DIR}/AdminServer/start_AdminServer.log"
+                                echo "AdminServer failed to start. Check ${STDOUT_LOGS_DIR}/AdminServer/logs/start_AdminServer.log"
                                 exit 1
                         fi
-                        admin_status=`checkServerStatusUP ${ADMIN_HOSTNAME} $ADMIN_PORT`
+                        admin_status=`checkServerStatusUP ${ADMIN_HOSTNAME} ${ADMIN_PORT}`
                 done
                 echo "OK"
                 exit 0;
@@ -62,16 +62,16 @@ startServer()
 	then
 		cd $DOMAIN_HOME
 		echo -n "Starting $1 ..."
-		bin/startManagedWebLogic.sh $SRV_NAME > ${STDOUT_LOGS_DIR}/$SRV_NAME/start_${SRV_NAME}.log 2>&1 &
+		bin/startManagedWebLogic.sh ${SRV_NAME} > ${STDOUT_LOGS_DIR}/${SRV_NAME}/logs/start_${SRV_NAME}.log 2>&1 &
 		status=`checkServerStatusUP $HOSTN $PORTN`
 		while [ $status = "DOWN"  ]
 		do
 			echo -n "."
 			sleep 30
-			procRunning=$(ps -ef | grep $SRV_NAME | grep -v grep | grep java | wc -l)
+			procRunning=$(ps -ef | grep ${SRV_NAME} | grep -v grep | grep java | wc -l)
 			if [ $procRunning -eq 0 ]
 			then
-				echo "$SRV_NAME failed to start. Check ${STDOUT_LOGS_DIR}/$SRV_NAME/start_${SRV_NAME}.log"
+				echo "${SRV_NAME} failed to start. Check ${STDOUT_LOGS_DIR}/${SRV_NAME}/logs/start_${SRV_NAME}.log"
 				exit 1
 			fi
 			status=`checkServerStatusUP $HOSTN $PORTN`
@@ -100,7 +100,7 @@ do
 			true
 			[ "$?" -ne "0" ] && echo "ERREUR : Node manager admin inaccessible" && exit 1
 			
-			checkProcessCwdStatus ${NMGR_ADM_SERVER_NAME} ${NMGR_ADM_CWD}
+			checkProcessCwdStatus ${NMGR_SERVER_NAME} ${NMGR_ADM_CWD}
 			true
 			[ "$?" -ne "0" ] && echo "ERREUR : Node manager admin inaccessible" && exit 1
 			

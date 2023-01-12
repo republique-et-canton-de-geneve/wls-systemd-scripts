@@ -1,5 +1,8 @@
 #!/bin/bash
-
+#
+# Gives status the Node Manager (command line)
+#
+# Source the environment
 . /opt/oracle/scripts/esb_env.sh
 . /opt/oracle/scripts/wls_functions.sh
 

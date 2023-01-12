@@ -1,43 +1,14 @@
+# profile for your weblogicuser -> customize to your environment
 export TERM=xterm
-
-export ORACLE_BASE=/opt/oracle
-export ORACLE_HOME=$ORACLE_BASE/products/fmw
-export MW_HOME=$ORACLE_HOME
-export DOMAIN_HOME=$ORACLE_BASE/Middleware/domains/esb_domain
-export NM_HOME=$DOMAIN_HOME/nodemanager
-export WL_HOME=$MW_HOME/wlserver
-
-export JAVA_HOME=/opt/java/jdk1.8_current
-export LANG=en_US.utf8
 export LC_ALL=en_US.utf8
+
+export JAVA_HOME=/opt/java/jdk1.8_current                       # where your jdk is
 export PATH=${JAVA_HOME}/bin:${PATH}
 
-alias obase='cd $ORACLE_BASE 2>/dev/null'
-alias ohome='cd $ORACLE_HOME 2>/dev/null'
-alias ocommon='cd $ORACLE_HOME/oracle_common 2>/dev/null'
-alias omwhome='cd $MW_HOME 2>/dev/null'
-alias odomain='cd $DOMAIN_HOME 2>/dev/null'
-alias owlhome='cd $WL_HOME 2>/dev/null'
-alias onodemgr='cd $NM_HOME 2>/dev/null'
-alias owlst='$ORACLE_HOME/oracle_common/common/bin/./wlst.sh'
-
-alias jhome='cd $JAVA_HOME 2>/dev/null'
-
-alias oenv='echo "ORACLE_BASE: $ORACLE_BASE"; echo "ORACLE_HOME: $ORACLE_HOME"; echo "MW_HOME    : $MW_HOME"; echo "WL_HOME    : $WL_HOME"; echo "NM_HOME    : $NM_HOME"; echo "DOMAIN_HOME: $DOMAIN_HOME"; echo "JAVA_HOME  : $JAVA_HOME"; echo "PATH       : $PATH"'
-
-alias ll='ls -altrh --color'
-alias llo='ll -rt /opt/oracle/Middleware/domains/esb_domain/servers/WLS_OSB1/logs/'
-alias lla='ll -rt /opt/oracle/Middleware/domains/esb_domain/servers/AdminServer/logs/'
-alias olog='tail -500f /opt/oracle/Middleware/domains/esb_domain/servers/WLS_OSB1/logs/WLS_OSB1.out'
-alias alog='tail -500f /opt/oracle/Middleware/domains/esb_domain/servers/AdminServer/logs/AdminServer.out'
-
-alias psj='ps -fu "$USER" | egrep "java" | egrep -v grep'
-alias cdscripts='cd /opt/oracle/scripts'
-alias cdlogs='cd /var/opt/oracle/'
-alias stopall='cd /opt/oracle/scripts ; for i in soa osb wsm admin ; do ./stop-wls-server.sh $i ; done'
-alias stopwls='cd /opt/oracle/scripts ; ./stop-wls-server.sh'
-alias startall='cd /opt/oracle/scripts ; for i in admin wsm soa osb ; do ./start-wls-server.sh $i ; done'
-alias startwls='cd /opt/oracle/scripts ; ./start-wls-server.sh'
-alias statusall='cd /opt/oracle/scripts ; ./status-wls-server.sh ALL'
-alias startnmgr='cd /opt/oracle/scripts ; ./start_nmgr.sh'
+export ORACLE_BASE=/opt/oracle                                  # only used thereafter
+export MW_HOME= $ORACLE_BASE/products/fmw                       # path to 'fmw' directory
+export DOMAIN_HOME=$ORACLE_BASE/Middleware/domains/esb_domain   # path to your weblogic domain
+# export ORACLE_HOME=$MW_HOME                                     # unused
+# export WL_HOME=$MW_HOME/wlserver                                # unused
+# export NM_HOME=$DOMAIN_HOME/nodemanager                         # unused
 

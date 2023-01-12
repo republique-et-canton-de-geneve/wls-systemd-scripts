@@ -1,0 +1,11 @@
+# Sample hosts file needed for virtual host names (VHN) and virtual IP (VIP)
+# OFM
+10.0.0.1 adminvhn                   # AdminServer VHN and VIP
+# noeud 1
+10.0.0.2 osbhost1vhn1               # WLS_SOA1 VHN and VIP
+10.0.0.3 osbhost1vhn2               # WLS_OSB1 VHN and VIP
+10.0.0.4 osbhost1 wsmhost1 node1    # WLS_WSM1 VHN needs to be resolved as ens3 network interface physical IP of node1
+# noeud 2
+10.0.0.5 osbhost2vhn1               # WLS_SOA2 VHN and VIP
+10.0.0.6 osbhost2vhn2               # WLS_OSB2 VHN and VIP
+10.0.0.7 osbhost2 wsmhost2 node2    # WLS_WSM2 VHN needs to be resolved as ens3 network interface physical IP of node2

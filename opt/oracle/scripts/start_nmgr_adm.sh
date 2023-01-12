@@ -1,15 +1,15 @@
 #!/bin/bash
-
+#
+# Start the Admin Node Manager (command line)
+#
+# Source the environment
 . /opt/oracle/scripts/esb_env.sh
 . /opt/oracle/scripts/wls_functions.sh
-
-# set -x
-# find /var/opt/oracle/NodeManager -type f | xargs rm
 
 checkServerStatus ${SERVER_HOSTNAME} ${NMGR_ADM_PORT}
 CR_PORT=$?
 
-checkProcessCwdStatus ${NMGR_ADM_SERVER_NAME} ${NMGR_ADM_CWD}
+checkProcessCwdStatus ${NMGR_SERVER_NAME} ${NMGR_ADM_CWD}
 CR_PS=$?
 
 # Force ListenAdress to physical node
@@ -21,7 +21,7 @@ then
 	exit 1
 else
 	/opt/oracle/scripts/mount_vip.sh
-	nohup ${DOMAIN_HOME}/servers/AdminServer/nodemanager/startNodeManagerAdmin.sh > ${STDOUT_LOGS_DIR}/NodeManager/NodeManager_admin.out 2>&1&
+	nohup ${DOMAIN_HOME}/servers/AdminServer/nodemanager/startNodeManagerAdmin.sh > ${DOMAIN_HOME}/servers/AdminServer/nodemanager/logs/nodemanager_adm.out 2>&1&
 	echo "Waiting for start end "
 	COUNT=1
 	CR_PORT=1

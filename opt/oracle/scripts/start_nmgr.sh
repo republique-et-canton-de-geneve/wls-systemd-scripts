@@ -1,10 +1,10 @@
 #!/bin/bash
-
+#
+# Start the Node Manager (command line)
+#
+# Source the environment
 . /opt/oracle/scripts/esb_env.sh
 . /opt/oracle/scripts/wls_functions.sh
-
-# set -x
-# find /var/opt/oracle/NodeManager -type f | xargs rm
 
 checkServerStatus ${SERVER_HOSTNAME} ${NMGR_PORT}
 CR_PORT=$?
@@ -21,7 +21,7 @@ then
 	exit 1
 else
 	/opt/oracle/scripts/mount_vip.sh
-	nohup ${DOMAIN_HOME}/bin/startNodeManager.sh > ${STDOUT_LOGS_DIR}/NodeManager/NodeManager.out 2>&1 &
+	nohup ${DOMAIN_HOME}/bin/startNodeManager.sh >>  ${DOMAIN_HOME}/nodemanager/logs/nodemanager.out 2>&1 &
 	echo "Waiting for start end "
 	COUNT=1
 	CR_PORT=1

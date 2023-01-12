@@ -6,3 +6,7 @@
 # IntelliJ
 .idea/
 *.iml
+
+# Other
+.old/
+fast_wlst/

@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+# Check status of a process: by checking port is open, by checking process is running, or process lock file is present
+#
+# Does not need to source the environment
 
 COLOR_RED=`tput setaf 1`
 COLOR_GREEN=`tput setaf 2`
@@ -11,6 +15,7 @@ printUsage()
 	exit 1
 }
 
+# check if process is responding on its IP+PORT
 checkServerStatus()
 {
 	CR=2
@@ -26,6 +31,7 @@ checkServerStatus()
 	return $CR
 }
 
+# check if process is responding on its IP+PORT
 checkServerStatusUP()
 {
 	# SERVER_HOSTNAME PORT
@@ -37,6 +43,7 @@ checkServerStatusUP()
 	fi
 }
 
+# check if a process is started
 checkProcessStatus()
 {
 	CR=2
@@ -52,6 +59,7 @@ checkProcessStatus()
 	return $CR
 }
 
+# check if process has created its working directory (used to monitor node managers)
 checkProcessCwdStatus()
 {
 	# Version specifique avec controle du repertoire d execution du script pour differencier les 2 node manager
@@ -78,6 +86,7 @@ checkProcessCwdStatus()
 	return $CR
 }
 
+# color code a return status
 checkExitCode()
 {
 	if [ "$1" -eq "0" ]

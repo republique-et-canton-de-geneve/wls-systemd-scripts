@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-# Stops WLS admin server and managed servers
-# 
+# Stops WLS admin server and managed servers (command line)
+#
 # Source the environment
 . /opt/oracle/scripts/esb_env.sh
 . /opt/oracle/scripts/wls_functions.sh
@@ -20,7 +20,7 @@ stopAdminServer()
                 echo "Stopping Admin Server..."
                 cd $DOMAIN_HOME
                 sh bin/stopWebLogic.sh
-                status=`checkServerStatusUP $ADMIN_PORT`
+                status=`checkServerStatusUP ${ADMIN_PORT}`
                 if [ $status = "DOWN" ]
                 then
                         echo "OK"
@@ -77,7 +77,7 @@ do
 			checkServerStatus ${SERVER_HOSTNAME} ${NMGR_ADM_PORT}
 			[ "$?" -ne "0" ] && echo "ERREUR : Node manager admin inaccessible" && exit 1
 			
-			checkProcessCwdStatus ${NMGR_ADM_SERVER_NAME} ${NMGR_ADM_CWD}
+			checkProcessCwdStatus ${NMGR_SERVER_NAME} ${NMGR_ADM_CWD}
 			[ "$?" -ne "0" ] && echo "ERREUR : Node manager admin inaccessible" && exit 1
 			
 			stopAdminServer

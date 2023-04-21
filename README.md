@@ -22,7 +22,7 @@ WLS_WSM2, WLS_OSB2, WLS_SOA2). The default ports have been used.
 Each node is identified by an environment variable NODE equal to 1 (where the admin server is) or 2 (on the other server).
 There are virtual IP addresses (VIP) that are used for each server: `adminvhn` for the Adminserver, `osbhost1vhn1`
 for WLS_SOA1, `osbhost1vhn2` for WLS_SOA2, `osbhost1vhn2` for WLS_OSB1, `osbhost2vhn2` for WLS_OSB2, `osbhost1`
-for WLS_WSM1, and `osbhost2` for WLS_WSM2 (actually wsmhost1 and wsmhost1 route to the ens3 network interface of each server respectively)
+for WLS_WSM1, and `osbhost2` for WLS_WSM2 (actually wsmhost1 and wsmhost1 route to the eth0 network interface of each server respectively)
 
 There is a separate node manager for the administration server listening on the AdminServer VIP, in order to ease the migration process during a recovery. This is not mandatory and you can safely ignore the start/stop/status/service files for this service if you whish to rely on the Oracle standard.
 
@@ -84,8 +84,9 @@ Every `service*.sh` file is intended to be used as `root`, whereas any other fil
 
 `wlsvip <- nodemgr <- osbserver/soaserver/wsmserver`
 
-- **esb_env.sh**: main environment file describing your installation -> customize to your environment
-- **profile**: should be part for of your weblogic user profile      -> customize to your environment
+- **esb_env.sh.template**: main environment file describing your installation -> customize to your environment
+- **profile.template**: should be part for of your weblogic user profile      -> customize to your environment
+
 - **wls_functions.sh**: internal functions used to monitor processes
 - **enable_admin_server.sh**: used to change the Weblogic Administration Server location
 - **disable_admin_server.sh**: same

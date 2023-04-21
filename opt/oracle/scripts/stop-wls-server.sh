@@ -3,7 +3,9 @@
 # Stops WLS admin server and managed servers (command line)
 #
 # Source the environment
+# shellcheck source=esb_env.sh
 . /opt/oracle/scripts/esb_env.sh
+# shellcheck source=wls_functions.sh
 . /opt/oracle/scripts/wls_functions.sh
 
 printUsage()
@@ -14,14 +16,14 @@ printUsage()
 
 stopAdminServer()
 {
-        status=`checkServerStatusUP ${ADMIN_HOSTNAME} ${ADMIN_PORT}`
-        if [ $status = "UP" ]
+        status=$(checkServerStatusUP "${ADMIN_HOSTNAME}" "${ADMIN_PORT}")
+        if [ "$status" = "UP" ]
         then
                 echo "Stopping Admin Server..."
-                cd $DOMAIN_HOME
+                cd "$DOMAIN_HOME" || exit
                 sh bin/stopWebLogic.sh
-                status=`checkServerStatusUP ${ADMIN_PORT}`
-                if [ $status = "DOWN" ]
+                status=$(checkServerStatusUP "${ADMIN_PORT}")
+                if [ "$status" = "DOWN" ]
                 then
                         echo "OK"
                         exit 0;
@@ -41,18 +43,18 @@ stopServer()
 	SRV_NAME=$1
 	HOSTN=$2
 	PORTN=$3
-	status=`checkServerStatusUP $HOSTN $PORTN`
-	if [ $status = "UP" ]
+	status=$(checkServerStatusUP "$HOSTN" "$PORTN")
+	if [ "$status" = "UP" ]
 	then
-		cd $DOMAIN_HOME
+		cd "$DOMAIN_HOME" || exit
 		echo "Stopping $1 ..."
-		bin/stopManagedWebLogic.sh $SRV_NAME
-		status=`checkServerStatusUP $HOSTN $PORTN`
-		while [ $status = "UP"  ]
+		bin/stopManagedWebLogic.sh "$SRV_NAME"
+		status=$(checkServerStatusUP "$HOSTN" "$PORTN")
+		while [ "$status" = "UP"  ]
 		do
 			echo -n "."
 			sleep 30
-			status=`checkServerStatusUP $HOSTN $PORTN`
+			status=$(checkServerStatusUP "$HOSTN" "$PORTN")
 		done
 		echo "OK"
 		exit 0
@@ -74,46 +76,46 @@ for arg in $args
 do
         case $arg in
 		'admin')
-			checkServerStatus ${SERVER_HOSTNAME} ${NMGR_ADM_PORT}
+			checkServerStatus "${SERVER_HOSTNAME}" "${NMGR_ADM_PORT}"
 			[ "$?" -ne "0" ] && echo "ERREUR : Node manager admin inaccessible" && exit 1
 			
-			checkProcessCwdStatus ${NMGR_SERVER_NAME} ${NMGR_ADM_CWD}
+			checkProcessCwdStatus "${NMGR_SERVER_NAME}" "${NMGR_ADM_CWD}"
 			[ "$?" -ne "0" ] && echo "ERREUR : Node manager admin inaccessible" && exit 1
 			
 			stopAdminServer
 			;;
 			
 		'soa')
-			checkServerStatus ${SERVER_HOSTNAME} ${NMGR_PORT}
+			checkServerStatus "${SERVER_HOSTNAME}" "${NMGR_PORT}"
 			[ "$?" -ne "0" ] && echo "ERREUR : Node manager inaccessible" && exit 1
 			
-			checkProcessCwdStatus ${NMGR_SERVER_NAME} ${NMGR_CWD}
+			checkProcessCwdStatus "${NMGR_SERVER_NAME}" "${NMGR_CWD}"
 			[ "$?" -ne "0" ] && echo "ERREUR : Node manager inaccessible" && exit 1
 			
-			export JAVA_OPTIONS=${WLS_AGENT_DYNA_SOA} ${JAVA_OPTIONS}
-			stopServer $SOA_SERVER_NAME $SOA_HOSTNAME $SOA_PORT
+			export JAVA_OPTIONS=${WLS_AGENT_DYNA_SOA} "${JAVA_OPTIONS}"
+			stopServer "$SOA_SERVER_NAME" "$SOA_HOSTNAME" "$SOA_PORT"
 			;;
 			
 		'osb')
-			checkServerStatus ${SERVER_HOSTNAME} ${NMGR_PORT}
+			checkServerStatus "${SERVER_HOSTNAME}" "${NMGR_PORT}"
 			[ "$?" -ne "0" ] && echo "ERREUR : Node manager inaccessible" && exit 1
 			
-			checkProcessCwdStatus ${NMGR_SERVER_NAME} ${NMGR_CWD}
+			checkProcessCwdStatus "${NMGR_SERVER_NAME}" "${NMGR_CWD}"
 			[ "$?" -ne "0" ] && echo "ERREUR : Node manager inaccessible" && exit 1
 			
-			export JAVA_OPTIONS=${WLS_AGENT_DYNA_OSB} ${JAVA_OPTIONS}
-			stopServer $OSB_SERVER_NAME $OSB_HOSTNAME $OSB_PORT
+			export JAVA_OPTIONS=${WLS_AGENT_DYNA_OSB} "${JAVA_OPTIONS}"
+			stopServer "$OSB_SERVER_NAME" "$OSB_HOSTNAME" "$OSB_PORT"
 			;;
 			
 		'wsm')
-			checkServerStatus ${SERVER_HOSTNAME} ${NMGR_PORT}
+			checkServerStatus "${SERVER_HOSTNAME}" "${NMGR_PORT}"
 			[ "$?" -ne "0" ] && echo "ERREUR : Node manager inaccessible" && exit 1
 			
-			checkProcessCwdStatus ${NMGR_SERVER_NAME} ${NMGR_CWD}
+			checkProcessCwdStatus "${NMGR_SERVER_NAME}" "${NMGR_CWD}"
 			[ "$?" -ne "0" ] && echo "ERREUR : Node manager inaccessible" && exit 1
 			
-			export JAVA_OPTIONS=${WLS_AGENT_DYNA_WSM} ${JAVA_OPTIONS}
-			stopServer $WSM_SERVER_NAME $WSM_HOSTNAME $WSM_PORT
+			export JAVA_OPTIONS=${WLS_AGENT_DYNA_WSM} "${JAVA_OPTIONS}"
+			stopServer "$WSM_SERVER_NAME" "$WSM_HOSTNAME" "$WSM_PORT"
 			;;
 			
 		*)

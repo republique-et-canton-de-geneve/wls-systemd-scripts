@@ -3,7 +3,9 @@
 # Check status of node manager, admin server and all nodes (command line)
 #
 # Source the environment
+# shellcheck source=esb_env.sh
 . /opt/oracle/scripts/esb_env.sh
+# shellcheck source=wls_functions.sh
 . /opt/oracle/scripts/wls_functions.sh
 
 if [ $# -eq 0 ]
@@ -17,39 +19,39 @@ for arg in $args
 do
 	case $arg in
 		'admin')
-			checkServerStatus ${ADMIN_HOSTNAME} ${ADMIN_PORT}
-			ip a | egrep -wq `egrep "${ADMIN_HOSTNAME}" /etc/hosts | awk '{print($1)}'`
+			checkServerStatus "${ADMIN_HOSTNAME}" "${ADMIN_PORT}"
+			ip a | grep -Ewq $(grep -E "${ADMIN_HOSTNAME}" /etc/hosts | awk '{print($1)}')
 			if [ "$?" -ne "0" ]
 			then
 				echo "Adminserver not migrated on this server"
 			else
-				checkProcessStatus ${ADMIN_SERVER_NAME}
+				checkProcessStatus "${ADMIN_SERVER_NAME}"
 			fi
 			;;
 			
 		'soa')
-			checkServerStatus ${SOA_HOSTNAME} ${SOA_PORT}
-			checkProcessStatus ${SOA_SERVER_NAME}
+			checkServerStatus "${SOA_HOSTNAME}" "${SOA_PORT}"
+			checkProcessStatus "${SOA_SERVER_NAME}"
 			;;
 			
 		'osb')
-			checkServerStatus ${OSB_HOSTNAME} ${OSB_PORT}
-			checkProcessStatus ${OSB_SERVER_NAME}
+			checkServerStatus "${OSB_HOSTNAME}" "${OSB_PORT}"
+			checkProcessStatus "${OSB_SERVER_NAME}"
 			;;
 			
 		'wsm')
-			checkServerStatus ${WSM_HOSTNAME} ${WSM_PORT}
-			checkProcessStatus ${WSM_SERVER_NAME}
+			checkServerStatus "${WSM_HOSTNAME}" "${WSM_PORT}"
+			checkProcessStatus "${WSM_SERVER_NAME}"
 			;;
 			
 		'nmgr')
-			checkServerStatus ${SERVER_HOSTNAME} ${NMGR_PORT}
-			checkProcessCwdStatus ${NMGR_SERVER_NAME} ${NMGR_CWD}
+			checkServerStatus "${SERVER_HOSTNAME}" "${NMGR_PORT}"
+			checkProcessCwdStatus "${NMGR_SERVER_NAME}" "${NMGR_CWD}"
 			;;
 			
 		'nmgr_adm')
-			checkServerStatus ${SERVER_HOSTNAME} ${NMGR_ADM_PORT}
-			checkProcessCwdStatus ${NMGR_SERVER_NAME} ${NMGR_ADM_CWD}
+			checkServerStatus "${SERVER_HOSTNAME}" "${NMGR_ADM_PORT}"
+			checkProcessCwdStatus "${NMGR_SERVER_NAME}" "${NMGR_ADM_CWD}"
 			;;
 			
 		'ALL')
@@ -65,4 +67,3 @@ do
 			;;
 	esac
 done
-

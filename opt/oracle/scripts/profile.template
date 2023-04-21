@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# profile for your weblogicuser -> customize to your environment
+export TERM=xterm
+export LC_ALL=en_US.utf8
+
+export JAVA_HOME=/u01/app/jdk1.8                                            # -> customize to your environment, where your jdk is
+export PATH=${JAVA_HOME}/bin:${PATH}
+
+export MW_HOME=/u01/app/oracle/products/fmw                                 # -> customize to your environment, path to 'fmw' directory
+export DOMAIN_HOME=/u01/app/oracle/user_projects/domains/sample-domain1     # -> customize to your environment, as set in setDomainEnv.sh

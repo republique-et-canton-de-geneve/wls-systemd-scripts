@@ -3,20 +3,21 @@
 # Sets up the environment for starting and stopping the WLS admin and managed servers
 
 # the NODE variable will be used to determine which servers to start, this is based on a naming convention -> customize to your environment
-export SERVER_HOSTNAME=`hostname`
+SERVER_HOSTNAME=$(hostname)
+export SERVER_HOSTNAME
 TMP=$( hostname -s | awk '{ print substr($0,length,1) }' )
-if [ ${TMP} = "a" ] # the NODE 1 carries adminvhn and is the only one to finish with an 'a'
+if [ "${TMP}" = "a" ] # the NODE 1 carries adminvhn and is the only one to finish with an 'a'
 then
 	export NODE="1"
 else
 	export NODE="2"
 fi
-export NETMASK=`ifconfig ens3 | egrep netmask | sed s/'\(.*\)netmask \([0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\)\(.*\)'/"\2"/g`
+NETMASK=$(ifconfig eth0 | grep -E netmask | sed s/'\(.*\)netmask \([0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\)\(.*\)'/"\2"/g)
+export NETMASK
 export VIP_NETMASK="255.255.252.0"
 
-export DOMAIN_HOME=$ORACLE_BASE/Middleware/domains/esb_domain   # path to your weblogic domain
+export DOMAIN_HOME=/opt/oracle/Middleware/domains/esb_domain   # path to your weblogic domain
 export STDOUT_LOGS_DIR=${DOMAIN_HOME}/servers
-# export CONSOLE_PASSWD=weblogicuserpassword					# unused
 
 # Configuration for Dynatrace
 export DYNA_SRV_test_1="testdynserver01:9998"
@@ -24,7 +25,8 @@ export DYNA_SRV_test_2="testdynserver02:9998"
 export DYNA_SRV_PROD_1="prddynserver01:9998"
 export DYNA_SRV_PROD_2="prddynserver02:9998"
 
-SRVNUM="$(( $NODE % 2 + 1 ))"
+# the SERVER_HOSTNAME variable will be used to determine which environment it is, this is based on a naming convention -> customize to your environment
+SRVNUM="$(( NODE % 2 + 1 ))"
 case "$SERVER_HOSTNAME" in
 	rh700*)
 		ENV=PROD

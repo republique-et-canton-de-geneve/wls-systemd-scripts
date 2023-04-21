@@ -10,3 +10,5 @@
 # Other
 .old/
 fast_wlst/
+esb_env.sh
+profile

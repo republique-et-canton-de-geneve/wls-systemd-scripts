@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # profile for your weblogicuser -> customize to your environment
 export TERM=xterm
 export LC_ALL=en_US.utf8
@@ -5,10 +7,5 @@ export LC_ALL=en_US.utf8
 export JAVA_HOME=/opt/java/jdk1.8_current                       # where your jdk is
 export PATH=${JAVA_HOME}/bin:${PATH}
 
-export ORACLE_BASE=/opt/oracle                                  # only used thereafter
-export MW_HOME= $ORACLE_BASE/products/fmw                       # path to 'fmw' directory
-export DOMAIN_HOME=$ORACLE_BASE/Middleware/domains/esb_domain   # path to your weblogic domain
-# export ORACLE_HOME=$MW_HOME                                     # unused
-# export WL_HOME=$MW_HOME/wlserver                                # unused
-# export NM_HOME=$DOMAIN_HOME/nodemanager                         # unused
-
+export MW_HOME=/opt/oracle/products/fmw                         # path to 'fmw' directory
+export DOMAIN_HOME=/opt/oracle/Middleware/domains/esb_domain    # path to your weblogic domain

@@ -1,16 +1,11 @@
 #!/bin/bash
 #
-# Check status of a process: by checking port is open, by checking process is running, or process lock file is present (command line)
+# Check status of a process: by checking port is open, by checking process is running, or process lock file is present (systemd)
 #
 # Does not need to source the environment
 
-COLOR_RED=$(tput setaf 1)
-COLOR_GREEN=$(tput setaf 2)
-COLOR_RESET=$(tput sgr0)
-
 printUsage()
 {
-	echo "Usage: $0 <nmgr|admin|soa|osb|wsm>"
 	exit 1
 }
 
@@ -21,10 +16,8 @@ checkServerStatus()
 	# SERVER_HOSTNAME PORT
 	if nc --send-only "$1" "$2" < /dev/null 2> /dev/null  > /dev/null
 	then
-		echo "${COLOR_GREEN}OK${COLOR_RESET} : Listening on $2"
 		CR=0
 	else
-		echo "${COLOR_RED}KO${COLOR_RESET} : Port closed"
 		CR=1
 	fi
 	return $CR
@@ -33,13 +26,15 @@ checkServerStatus()
 # check if process is responding on its IP+PORT
 checkServerStatusUP()
 {
+	CR=2
 	# SERVER_HOSTNAME PORT
 	if nc --send-only "$1" "$2" < /dev/null 2> /dev/null  > /dev/null
 	then
-		echo "UP"
+		CR=0
 	else
-		echo "DOWN"
+		CR=1
 	fi
+	return $CR
 }
 
 # check if a process is started
@@ -49,10 +44,8 @@ checkProcessStatus()
 	if [ $(ps -ef | grep -E "$1" | grep -v grep | grep java | wc -l) -eq "1" ]
 	then
 		PID=$(ps -ef | grep "$1" | grep -v grep | grep java | awk '{print($2)}')
-		echo "${COLOR_GREEN}OK${COLOR_RESET} : Process ${PID}"
 		CR=0
 	else
-		echo "${COLOR_RED}KO${COLOR_RESET} : No process found"
 		CR=1
 	fi
 	return $CR
@@ -67,19 +60,17 @@ checkProcessCwdStatus()
 	CWD=$2
 	PSCOUNT=0
 	
-	[ ! -d "$CWD" ] && echo "Directory $CWD does not exists" && return $CR
+	[ ! -d "$CWD" ] && #echo "Directory $CWD does not exists" && return $CR
 	
 	for process in $(ps -ef | grep -E "$PSNAME" | grep -v grep | grep java | awk '{print($2)}' | tr "\n" " ")
 	do
 		ls -ld /proc/${process}/cwd | awk '{print($NF)}' | grep -Ewq "$CWD"
-		[ "$?" -eq "0" ] && PSCOUNT=$(( PSCOUNT + 1 )) && PID=${process}
+		[ "$?" -eq "0" ] && PSCOUNT=$(( PSCOUNT + 1 ))
 	done
 	if [ "$PSCOUNT" -ge "1" ]
 	then
-		echo "${COLOR_GREEN}OK${COLOR_RESET} : Process ${PID}"
 		CR=0
 	else
-		echo "${COLOR_RED}KO${COLOR_RESET} : No process found"
 		CR=1
 	fi
 	return $CR
@@ -88,11 +79,13 @@ checkProcessCwdStatus()
 # color code a return status
 checkExitCode()
 {
+	CR=2
 	if [ "$1" -eq "0" ]
 	then
-		echo "${COLOR_GREEN}OK${COLOR_RESET}"
+		CR=0
 	else
-		echo "${COLOR_RED}KO${COLOR_RESET}"
+		CR=1
 	fi
+	return $CR
 }
 

@@ -1,0 +1,88 @@
+#!/bin/bash
+#
+# Sets up the environment for starting and stopping the WLS admin and managed servers
+
+# the NODE variable will be used to determine which servers to start, this is based on a naming convention -> customize to your environment
+SERVER_HOSTNAME=$(hostname)
+export SERVER_HOSTNAME
+TMP=$( hostname -s | awk '{ print substr($0,length,1) }' )
+if [ "${TMP}" = "a" ] # the NODE 1 carries adminvhn and is the only one to finish with an 'a'
+then
+	export NODE="1"
+else
+	export NODE="2"
+fi
+NETMASK=$(ifconfig eth0 | grep -E netmask | sed s/'\(.*\)netmask \([0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\)\(.*\)'/"\2"/g)
+export NETMASK
+export VIP_NETMASK="255.255.255.255"                                    # -> customize to your environment
+
+export DOMAIN_HOME=/u01/app/oracle/user_projects/domains/sample-domain1 # -> customize to your environment, as set in setDomainEnv.sh
+export STDOUT_LOGS_DIR=${DOMAIN_HOME}/servers                           # -> customize to your environment
+
+# Configuration for Dynatrace
+export DYNA_SRV_TEST_1="DYNA_SRV_TEST_1:9998"                           # -> customize to your environment
+export DYNA_SRV_TEST_2="DYNA_SRV_TEST_2:9998"                           # -> customize to your environment
+export DYNA_SRV_PROD_1="DYNA_SRV_PROD_1:9998"                           # -> customize to your environment
+export DYNA_SRV_PROD_2="DYNA_SRV_PROD_2:9998"                           # -> customize to your environment
+
+# the SERVER_HOSTNAME variable will be used to determine which environment it is, this is based on a naming convention -> customize to your environment
+SRVNUM="$(( NODE % 2 + 1 ))"
+case "$SERVER_HOSTNAME" in
+	prod*)                                                              # -> Example of a dynatrace monitoring of the production servers
+		ENV=PROD
+		eval export DYNA_SRV="\${DYNA_SRV_${ENV}_${SRVNUM}}"
+		[ -z "${DYNA_SRV}" ] && echo "Impossible to determine env or node number" && exit 1
+		export AGENT_NAME_OSB="PRD_OSB"
+		export AGENT_NAME_SOA="PRD_SOA"
+		export AGENT_NAME_WSM="PRD_WSM"
+		export WLS_AGENT_DYNA_OSB=" -agentpath:/path/to/dynatrace_agent/agent/lib64/libdtagent.so=name=${AGENT_NAME_OSB},server=${DYNA_SRV} "
+		export WLS_AGENT_DYNA_SOA=" -agentpath:/path/to/dynatrace_agent/agent/lib64/libdtagent.so=name=${AGENT_NAME_SOA},server=${DYNA_SRV} "
+		export WLS_AGENT_DYNA_WSM=" -agentpath:/path/to/dynatrace_agent/agent/lib64/libdtagent.so=name=${AGENT_NAME_WSM},server=${DYNA_SRV} "
+		;;
+	
+	test*)
+		ENV=TEST
+		eval export DYNA_SRV="\${DYNA_SRV_${ENV}_${SRVNUM}}"
+		[ -z "${DYNA_SRV}" ] && echo "Impossible to determine env or node number" && exit 1
+		export AGENT_NAME_OSB="TEST_OSB"
+		export AGENT_NAME_SOA="TEST_SOA"
+		export AGENT_NAME_WSM="TEST_WSM"
+		export WLS_AGENT_DYNA_OSB=" -agentpath:/path/to/dynatrace_agent/agent/lib64/libdtagent.so=name=${AGENT_NAME_OSB},server=${DYNA_SRV} "
+		export WLS_AGENT_DYNA_SOA=" -agentpath:/path/to/dynatrace_agent/agent/lib64/libdtagent.so=name=${AGENT_NAME_SOA},server=${DYNA_SRV} "
+		export WLS_AGENT_DYNA_WSM=" -agentpath:/path/to/dynatrace_agent/agent/lib64/libdtagent.so=name=${AGENT_NAME_WSM},server=${DYNA_SRV} "
+		;;
+	
+	dev*)
+		ENV=DEV                                                         # -> Example of a disabled dynatrace monitoring
+		export DYNA_SRV=""
+		export AGENT_NAME_OSB=""
+		export AGENT_NAME_SOA=""
+		export AGENT_NAME_WSM=""
+		export WLS_AGENT_DYNA_OSB=""
+		export WLS_AGENT_DYNA_SOA=""
+		export WLS_AGENT_DYNA_WSM=""
+		;;
+esac
+
+# IP, used for mounting/unmounting VIP and for monitoring
+export ADMIN_HOSTNAME=adminvhn									# Admin VIP
+export SOA_HOSTNAME=osbhost${NODE}vhn1							# SOA VIP
+export OSB_HOSTNAME=osbhost${NODE}vhn2							# OSB VIP
+export WSM_HOSTNAME=osbhost${NODE}								# WSM IP, not virtual
+
+# Port numbers, used exclusively for monitoring, we used standard HTTP ports            # -> customize to your environment
+export NMGR_PORT=5556											# NodeMgr port          # -> customize to your environment
+export NMGR_ADM_PORT=5557										# Admin NodeMgr port    # -> customize to your environment
+export ADMIN_PORT=7001											# Admin HTTP port       # -> customize to your environment
+export SOA_PORT=8001											# SOA HTTP port         # -> customize to your environment
+export OSB_PORT=8011											# OSB HTTP port         # -> customize to your environment
+export WSM_PORT=7010											# WSM HTTP port         # -> customize to your environment
+
+export NMGR_SERVER_NAME=NodeManager
+export ADMIN_SERVER_NAME=AdminServer							# Name of Weblogic Admin Server
+export SOA_SERVER_NAME=WLS_SOA${NODE}							# Name of Weblogic SOA Server, differs on each node
+export OSB_SERVER_NAME=WLS_OSB${NODE}							# Name of Weblogic OSB Server, differs on each node
+export WSM_SERVER_NAME=WLS_WSM${NODE}							# Name of Weblogic WSM Server, differs on each node
+
+export NMGR_CWD=${DOMAIN_HOME}/nodemanager
+export NMGR_ADM_CWD=${DOMAIN_HOME}/servers/AdminServer/nodemanager
